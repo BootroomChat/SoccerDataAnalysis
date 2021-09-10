@@ -1,19 +1,7 @@
 import csv
 import json
 
-STATS_KEYS = [u'id', u'team', u'name', u'position', u'playMins', u'result', u'goals', u'assists', u'goalsConceded',
-              u'penaltyConceded',
-              u'cornersTotal', u'aerialsWon', u'dribblesLost', u'shotsTotal', u'passesAccurate', u'tackleUnsuccesful',
-              u'defensiveAerials', u'aerialsTotal', u'offensiveAerials', u'passesTotal', u'throwInsTotal',
-              u'offsidesCaught', u'interceptions', u'ratings', u'touches', u'dispossessed', u'parriedSafe',
-              u'claimsHigh',
-              u'clearances', u'throwInAccuracy', u'collected', u'parriedDanger', u'possession', u'shotsOffTarget',
-              u'dribblesAttempted',
-              u'shotsOnPost', u'dribblesWon', u'cornersAccurate', u'tackleSuccess', u'throwInsAccurate',
-              u'dribbleSuccess', u'errorsCount',
-              u'aerialSuccess', u'shotsBlocked', u'tacklesTotal', u'tackleSuccessful', u'shotsOnTarget',
-              u'dribbledPast',
-              u'passesKey', u'foulsCommited', u'totalSaves', u'passSuccess', u'claimsTotal', u'claimsGround']
+from utils import STATS_KEYS
 
 
 def parse_stats(data):
