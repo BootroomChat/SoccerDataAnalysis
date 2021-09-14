@@ -2,6 +2,7 @@ from datetime import date
 
 from utils.fixtures_flatten import fixture_flatten
 import pandas as pd
+import lightgbm as lgb
 
 
 def get_two_team_paths(team_a, team_b):
@@ -14,8 +15,8 @@ def get_last_n_game_corner(team_name, this_date, n=5, fixtures=None, filter_=Non
         fixtures = pd.read_csv('../statistics/fixture_table.csv')
     team_rel_rows = fixtures[(fixtures['home'] == team_name) | (fixtures['away'] == team_name)]
     team_rel_rows = team_rel_rows[team_rel_rows.apply(lambda x: filter_ in x['path'], axis=1)]
-    teme_last_rows = team_rel_rows[team_rel_rows['date'] <= this_date.isoformat()].sort_values(by='date',
-                                                                                               ascending=False).head(n)
+    teme_last_rows = team_rel_rows[team_rel_rows['date'] < this_date.isoformat()].sort_values(by='date',
+                                                                                              ascending=False).head(n)
     df = corner_analysis(team_name, teme_last_rows)
     return df
 
@@ -52,5 +53,5 @@ if __name__ == '__main__':
 
     fixture_date = date(2021, 9, 10)
     team = 'West Ham'
-    result=get_last_n_game_corner(team, fixture_date,filter_='Premier')
+    result = get_last_n_game_corner(team, fixture_date, filter_='Premier')
     result.to_csv(team + '.csv')
