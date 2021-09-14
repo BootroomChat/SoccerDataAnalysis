@@ -19,7 +19,7 @@ def single_match_flatten(match_info):
         tmp = \
             {
                 'id': event['id'],
-                'eventId': event['eventId'],
+                'eventId': event.get('eventId',-1),
                 'minute': event['minute'],
                 'second': event.get('second', 0),
                 'teamName': team_name_dic[event['teamId']],
