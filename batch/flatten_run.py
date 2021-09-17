@@ -17,6 +17,7 @@ if __name__ == '__main__':
     #     data = load_json(match_path)
     #     df = single_match_flatten(data)
     #     df.to_csv(match_path.replace('match.json', 'event.csv'))
+    # Event data
     match_path = match_pathes(name_filter=['England-Premier-League', 'Europa-League'])
     for each_match_path in match_path:
         json_path = os.path.join(each_match_path, 'match.json')
