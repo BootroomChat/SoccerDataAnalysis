@@ -82,7 +82,7 @@ def get_corner_inputs(team_name=None, fixtures=None, filter_=None, n=5):
                 'away_wide_pass': away_wide_pass, 'away_cross': away_cross}
         df = df.append(data, ignore_index=True)
         print('Input Done!' + row['path'])
-    df.to_csv('corner_input.csv')
+    return df
 
 
 def is_wide_pass(is_home, is_first_half, x, y, end_x, end_y):
@@ -188,4 +188,5 @@ if __name__ == '__main__':
     # result = get_last_n_game_pass(team, fixture_date, filter_='Premier')
     # result.to_csv(team + '.csv')
 
-    get_corner_inputs(filter_='Premier')
+    df=get_corner_inputs(team_name=['Liverpool'],filter_='Premier',n=5)
+    df.to_csv('corner_input_5_liv.csv')
