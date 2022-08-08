@@ -1,0 +1,3 @@
+#!/bin/sh -l
+pip3 install -r /bootroomchat/soccerdataanalysis/requirements.txt
+uvicorn /bootroomchat/soccerdataanalysis/webapp/main:app --reload --port 80
