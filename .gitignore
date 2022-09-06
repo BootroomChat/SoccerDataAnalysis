@@ -101,11 +101,10 @@ ENV/
 .mypy_cache/
 
 # data
-matches
-players
-teams
+matches/
 merged_stats
 # statistics
+statisitcs/
 statistics.zip
 .vscode/
 
@@ -117,3 +116,6 @@ config.py
 leancloud_data/MergedStats
 nn_xg/*.json
 nn_xg/*.csv
+/config/*.conf
+/config/*.conf
+/config/*.conf
