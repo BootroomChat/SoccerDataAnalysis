@@ -1,10 +1,8 @@
 import os
 from typing import Union
-
 import oss2
 from fastapi import FastAPI
 from starlette.responses import FileResponse
-
 from config.config import default_config
 
 app = FastAPI()
