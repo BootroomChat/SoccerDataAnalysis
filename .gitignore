@@ -111,7 +111,6 @@ statistics.zip
 statistics/match_stats_per.csv
 football_predictor/model/
 football_predictor/data/*
-config.py
 
 leancloud_data/MergedStats
 nn_xg/*.json
