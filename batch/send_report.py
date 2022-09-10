@@ -10,7 +10,7 @@ from utils.messaging import AttachmentEmailSender
 @functools.lru_cache()
 def load_client_info():
     root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    path = root_path.replace('batch', 'config') + '/sales.csv'
+    path = root_path + '/config/sales.csv'
     df = pd.read_csv(path)
     return df
 

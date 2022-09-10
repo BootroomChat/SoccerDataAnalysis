@@ -120,3 +120,9 @@ wincertstore==0.2
 wrapt==1.12.1
 wsproto==1.1.0
 zipp==3.5.0
+tensorboard==2.6.0
+tensorboard-data-server==0.6.1
+tensorboard-plugin-wit==1.8.0
+tensorflow==2.3.4
+tensorflow-estimator==2.3.0
+oss2==2.12.1
