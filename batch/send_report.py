@@ -15,6 +15,12 @@ def load_client_info():
     return df
 
 
+def save_client_info(df: pd.DataFrame):
+    root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    path = root_path + '/config/sales.csv'
+    df.to_csv(path)
+
+
 def send_report(bucket, remote_path, local_path=None):
     local_path = remote_path if local_path is None else local_path
     local_path = local_path.replace('reports', 'statistics')
@@ -41,7 +47,7 @@ def send_report_bucket(bucket: oss2.Bucket, path_list: list):
     client_info = load_client_info()
     send_dict = dict()
     for index, info in client_info.iterrows():
-        if info['Trial'] or info['Membership']:
+        if (info['Trial'] and info['ReportSent'] < 5) or info['Membership']:
             send_dict[info['Email']] = list()
             for each_path in local_path_list:
                 if info['Level'] == 'Team':
@@ -56,6 +62,8 @@ def send_report_bucket(bucket: oss2.Bucket, path_list: list):
                 else:
                     lv = info['Level']
                     raise NotImplementedError(f'Level{lv} is not supported yet!')
+            client_info.loc[index, 'ReportSent'] = info['ReportSent'] + len(send_dict[info['Email']])
+    save_client_info(client_info)
     emailSenderClient = AttachmentEmailSender()
     for k, v in send_dict.items():
         if len(v) != 0:
@@ -87,6 +95,7 @@ if __name__ == '__main__':
             this_report_lst.append(file_path.key)
         if len(report_lst) == 0:
             report_lst = this_report_lst
+            send_report_bucket(bucket, report_lst)
         else:
             if len(this_report_lst) > len(report_lst):
                 new_report_set = list(set(this_report_lst).difference(set(report_lst)))

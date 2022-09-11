@@ -1,3 +1,4 @@
-﻿ClientID,ClientName,Sales,Email,Season,League,Team,Level,Trial,Membership
-1,test,Alex,alexsong623@hotmail.com,2021-2022,Premier League,Liverpool,Team,TRUE,FALSE
-2,testtest,Chen Hang,hang22c@gmail.com,2021-2022,Premier League,Man Utd,Team,TRUE,FALSE
+,ClientID,ClientName,Sales,Email,Season,League,Team,Level,Trial,Membership,ReportSent
+0,1,test,Alex,alexsong623@hotmail.com,2021-2022,Premier League,Liverpool,Team,TRUE,FALSE,0
+1,2,testtest,Chen Hang,hang22c@gmail.com,2021-2022,Premier League,Man Utd,Team,TRUE,FALSE,0
+2,3,380374286@qq.com,Bootroomchat,380374286@qq.com,2021-2022,Premier League,Liverpool,Team,TRUE,FALSE,0
