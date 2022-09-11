@@ -1,24 +1,9 @@
-import functools
 import os
 import time
 import oss2
 from config.config import default_config
-import pandas as pd
+from utils.data import load_client_info, save_client_info
 from utils.messaging import AttachmentEmailSender
-
-
-@functools.lru_cache()
-def load_client_info():
-    root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    path = root_path + '/config/sales.csv'
-    df = pd.read_csv(path)
-    return df
-
-
-def save_client_info(df: pd.DataFrame):
-    root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    path = root_path + '/config/sales.csv'
-    df.to_csv(path)
 
 
 def send_report(bucket, remote_path, local_path=None):
@@ -95,7 +80,6 @@ if __name__ == '__main__':
             this_report_lst.append(file_path.key)
         if len(report_lst) == 0:
             report_lst = this_report_lst
-            send_report_bucket(bucket, report_lst)
         else:
             if len(this_report_lst) > len(report_lst):
                 new_report_set = list(set(this_report_lst).difference(set(report_lst)))

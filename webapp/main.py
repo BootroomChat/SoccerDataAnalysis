@@ -38,3 +38,4 @@ def get_report(match_date: str, team: str):
                 bucket.get_object_to_file(each_report, local_path)
             return FileResponse(local_path, filename='report.pdf')
     return "No match report!"
+
