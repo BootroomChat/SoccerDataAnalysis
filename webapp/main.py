@@ -4,6 +4,7 @@ import oss2
 from fastapi import FastAPI
 from starlette.responses import FileResponse
 from config.config import default_config
+from utils.data import load_client_info, save_client_info
 
 app = FastAPI()
 
@@ -39,3 +40,23 @@ def get_report(match_date: str, team: str):
             return FileResponse(local_path, filename='report.pdf')
     return "No match report!"
 
+
+@app.post("/data/add_client")
+def add_client(client_name: str, sales: str, email: str, season: str, league: str, team: str, level: str,
+               trial: bool = True,
+               member_ship: bool = False):
+    info = load_client_info()
+
+    new_id = info['ClientID'].max() + 1
+    new_line = {'ClientID': new_id, 'ClientName': client_name, 'Sales': sales, 'Email': email, 'Season': season,
+                'League': league, 'Team': team, 'Level': level, 'Trial': trial, 'Membership': member_ship,
+                'ReportSent': 0}
+    info = info.append(new_line, ignore_index=True)
+    save_client_info(info)
+
+
+@app.post("/data/delete_client")
+def delete_client(client_id: int):
+    info = load_client_info()
+    info = info.drop(info[info['ClientID'] == client_id].index)
+    save_client_info(info)

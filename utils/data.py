@@ -4,7 +4,6 @@ from sys import platform
 import pandas as pd
 
 
-@functools.lru_cache()
 def load_client_info():
     root_path = os.path.abspath(os.path.join(os.getcwd(), "../.."))
     if platform == "win32":
