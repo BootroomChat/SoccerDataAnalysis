@@ -1,3 +1,4 @@
+import argparse
 import os
 import time
 import oss2
@@ -64,6 +65,12 @@ def send_report_bucket(bucket: oss2.Bucket, path_list: list):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-email', default=None)
+    parser.add_argument('-method',default ='batch')
+    parser.add_argument('-source',default ='oss')
+    parser.add_argument('-report_path', default=None)
+    args = parser.parse_args()
     config = default_config()
     info = load_client_info()
     aliyun_access_key = config.get("aliyun", "aliyun_access_key")
@@ -73,49 +80,21 @@ if __name__ == '__main__':
     # bucket = oss2.Bucket(auth, 'http://oss-cn-shanghai.aliyuncs.com', bucket)
     bucket = 'soccer-matches-hk'
     bucket = oss2.Bucket(auth, 'http://oss-cn-hongkong.aliyuncs.com', bucket)
-    report_lst = list()
-    while True:
-        this_report_lst = list()
-        for file_path in oss2.ObjectIterator(bucket, prefix='reports/'):
-            this_report_lst.append(file_path.key)
-        if len(report_lst) == 0:
-            report_lst = this_report_lst
-        else:
-            if len(this_report_lst) > len(report_lst):
-                new_report_set = list(set(this_report_lst).difference(set(report_lst)))
-                send_report_bucket(bucket, new_report_set)
+    if args.method == 'batch':
+        report_lst = list()
+        while True:
+            this_report_lst = list()
+            for file_path in oss2.ObjectIterator(bucket, prefix='reports/'):
+                this_report_lst.append(file_path.key)
+            if len(report_lst) == 0:
                 report_lst = this_report_lst
             else:
-                time.sleep(300)
-    # uploaded = load_json('oss_matches.json')
-    # if len(sys.argv) > 1:
-    #     if sys.argv[1] == 'upload':
-    #         for path in reversed(sorted(match_pathes())):
-    #             if '2023' not in path:
-    #                 continue
-    #             match_json_file = os.path.join(path, 'match.json')
-    #             if not bucket.object_exists(match_json_file):
-    #                 print('uploading', match_json_file)
-    #                 print('uploaded', bucket.put_object_from_file(match_json_file, match_json_file).status)
-    #             else:
-    #                 print('skip', match_json_file)
-    #             uploaded[match_json_file] = 1
-    #     else:
-    #         for oss_file in oss2.ObjectIterator(bucket):
-    #             match_json_file = oss_file.key
-    #             path = match_json_file.replace('match.json', '')
-    #             if not os.path.exists(match_json_file):
-    #                 if len(sys.argv) > 2 and sys.argv[2] not in match_json_file:
-    #                     continue
-    #                 print(match_json_file)
-    #                 # bucket.delete_object(match_json_file)
-    #                 # if match_json_file in uploaded:
-    #                 #     del uploaded[match_json_file]
-    #                 # continue
-    #                 os.makedirs(path, exist_ok=True)
-    #                 bucket.get_object_to_file(match_json_file, match_json_file)
-    #                 # calculate_path(path)
-    #             uploaded[match_json_file] = 1
-    #         if sys.argv[1] == 'save':
-    #             print('write uploaded')
-    #             write_json('oss_matches.json', uploaded)
+                if len(this_report_lst) > len(report_lst):
+                    new_report_set = list(set(this_report_lst).difference(set(report_lst)))
+                    send_report_bucket(bucket, new_report_set)
+                    report_lst = this_report_lst
+                else:
+                    time.sleep(300)
+    elif args.method == 'single':
+        if args.report_path is not None:
+            send_report_bucket(bucket=bucket,path_list=args.report_path.split(','))

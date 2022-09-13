@@ -41,6 +41,21 @@ def get_report(match_date: str, team: str):
     return "No match report!"
 
 
+@app.get("/oss/list_report")
+def list_report(season: str = '', league: str = '', team: str = ''):
+    config = default_config()
+    aliyun_access_key = config.get("aliyun", "aliyun_access_key")
+    aliyun_secret = config.get("aliyun", "aliyun_secret")
+    auth = oss2.Auth(aliyun_access_key, aliyun_secret)
+    bucket = 'soccer-matches-hk'
+    this_report_lst = list()
+    bucket = oss2.Bucket(auth, 'http://oss-cn-hongkong.aliyuncs.com', bucket)
+    for file_path in oss2.ObjectIterator(bucket, prefix='reports/'):
+        if season in file_path.key and league in file_path.key and team in file_path.key:
+            this_report_lst.append(file_path.key)
+    return this_report_lst
+
+
 @app.post("/data/add_client")
 def add_client(client_name: str, sales: str, email: str, season: str, league: str, team: str, level: str,
                trial: bool = True,
@@ -53,6 +68,12 @@ def add_client(client_name: str, sales: str, email: str, season: str, league: st
                 'ReportSent': 0}
     info = info.append(new_line, ignore_index=True)
     save_client_info(info)
+
+
+@app.post("/data/list_client")
+def list_client():
+    info = load_client_info()
+    return info.to_dict('records')
 
 
 @app.post("/data/delete_client")
