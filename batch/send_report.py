@@ -38,14 +38,26 @@ def send_report_bucket(bucket: oss2.Bucket, path_list: list, email=None):
                 send_dict[info['Email']] = list()
                 for each_path in local_path_list:
                     if info['Level'] == 'Team':
-                        if info['Team'] in each_path:
+                        if info['Team'] == 'ALL':
                             send_dict[info['Email']].append(each_path)
+                        else:
+                            for each_team in info['Team'].split(','):
+                                if each_team in each_path:
+                                    send_dict[info['Email']].append(each_path)
                     elif info['Level'] == 'League':
-                        if info['League'] in each_path or info['League'] == 'ALL':
+                        if info['League'] == 'ALL':
                             send_dict[info['Email']].append(each_path)
+                        else:
+                            for each_league in info['League'].split(','):
+                                if each_league in each_path:
+                                    send_dict[info['Email']].append(each_path)
                     elif info['Level'] == 'Season':
-                        if info['Season'] in each_path or info['Season'] in 'ALL':
+                        if info['Season'] == 'ALL':
                             send_dict[info['Email']].append(each_path)
+                        else:
+                            for each_season in info['Season'].split(','):
+                                if each_season in each_path:
+                                    send_dict[info['Email']].append(each_path)    
                     else:
                         lv = info['Level']
                         raise NotImplementedError(f'Level{lv} is not supported yet!')
@@ -99,5 +111,7 @@ if __name__ == '__main__':
                 else:
                     time.sleep(300)
     elif args.method == 'single':
-        if args.report_path is not None:
-            send_report_bucket(bucket=bucket, path_list=args.report_path.split(','))
+        if args.report_path is not None and args.email is not None:
+            path = args.report_path.split(',')
+            path =[each_path.replace("+",' ') for each_path in path]
+            send_report_bucket(bucket=bucket, path_list=path, email=args.email)
