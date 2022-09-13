@@ -14,7 +14,7 @@ def send_report(bucket, remote_path, local_path=None):
     bucket.get_object_to_file(remote_path, root_path + '/' + local_path + '.pdf')
 
 
-def send_report_bucket(bucket: oss2.Bucket, path_list: list):
+def send_report_bucket(bucket: oss2.Bucket, path_list: list, email=None):
     """
     :param bucket:
     :param path_list:
@@ -32,24 +32,27 @@ def send_report_bucket(bucket: oss2.Bucket, path_list: list):
 
     client_info = load_client_info()
     send_dict = dict()
-    for index, info in client_info.iterrows():
-        if (info['Trial'] and info['ReportSent'] < 5) or info['Membership']:
-            send_dict[info['Email']] = list()
-            for each_path in local_path_list:
-                if info['Level'] == 'Team':
-                    if info['Team'] in each_path:
-                        send_dict[info['Email']].append(each_path)
-                elif info['Level'] == 'League':
-                    if info['League'] in each_path:
-                        send_dict[info['Email']].append(each_path)
-                elif info['Level'] == 'Season':
-                    if info['Season'] in each_path:
-                        send_dict[info['Email']].append(each_path)
-                else:
-                    lv = info['Level']
-                    raise NotImplementedError(f'Level{lv} is not supported yet!')
-            client_info.loc[index, 'ReportSent'] = info['ReportSent'] + len(send_dict[info['Email']])
-    save_client_info(client_info)
+    if email is None:
+        for index, info in client_info.iterrows():
+            if (info['Trial'] and info['ReportSent'] < 5) or info['Membership']:
+                send_dict[info['Email']] = list()
+                for each_path in local_path_list:
+                    if info['Level'] == 'Team':
+                        if info['Team'] in each_path:
+                            send_dict[info['Email']].append(each_path)
+                    elif info['Level'] == 'League':
+                        if info['League'] in each_path or info['League'] == 'ALL':
+                            send_dict[info['Email']].append(each_path)
+                    elif info['Level'] == 'Season':
+                        if info['Season'] in each_path or info['Season'] in 'ALL':
+                            send_dict[info['Email']].append(each_path)
+                    else:
+                        lv = info['Level']
+                        raise NotImplementedError(f'Level{lv} is not supported yet!')
+                client_info.loc[index, 'ReportSent'] = info['ReportSent'] + len(send_dict[info['Email']])
+        save_client_info(client_info)
+    else:
+        send_dict = {email: local_path_list}
     emailSenderClient = AttachmentEmailSender()
     for k, v in send_dict.items():
         if len(v) != 0:
@@ -67,8 +70,8 @@ def send_report_bucket(bucket: oss2.Bucket, path_list: list):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-email', default=None)
-    parser.add_argument('-method',default ='batch')
-    parser.add_argument('-source',default ='oss')
+    parser.add_argument('-method', default='batch')
+    parser.add_argument('-source', default='oss')
     parser.add_argument('-report_path', default=None)
     args = parser.parse_args()
     config = default_config()
@@ -97,4 +100,4 @@ if __name__ == '__main__':
                     time.sleep(300)
     elif args.method == 'single':
         if args.report_path is not None:
-            send_report_bucket(bucket=bucket,path_list=args.report_path.split(','))
+            send_report_bucket(bucket=bucket, path_list=args.report_path.split(','))
