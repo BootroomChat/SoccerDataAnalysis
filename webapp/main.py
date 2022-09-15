@@ -7,6 +7,24 @@ from config.config import default_config
 from utils.data import load_client_info, save_client_info
 
 app = FastAPI()
+import secrets
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+
+security = HTTPBasic()
+
+
+def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
+    config = default_config()
+    correct_username = secrets.compare_digest(credentials.username, config.get("api", "user_name"))
+    correct_password = secrets.compare_digest(credentials.password, config.get("api", "password"))
+    if not (correct_username and correct_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return credentials.username
 
 
 @app.get("/")
@@ -59,7 +77,7 @@ def list_report(season: str = '', league: str = '', team: str = ''):
 @app.post("/data/add_client")
 def add_client(client_name: str, sales: str, email: str, season: str, league: str, team: str, level: str,
                trial: bool = True,
-               member_ship: bool = False):
+               member_ship: bool = False,username: str = Depends(get_current_username)):
     info = load_client_info()
 
     new_id = info['ClientID'].max() + 1
@@ -71,13 +89,13 @@ def add_client(client_name: str, sales: str, email: str, season: str, league: st
 
 
 @app.post("/data/list_client")
-def list_client():
+def list_client(username: str = Depends(get_current_username)):
     info = load_client_info()
     return info.to_dict('records')
 
 
 @app.post("/data/delete_client")
-def delete_client(client_id: int):
+def delete_client(client_id: int,username: str = Depends(get_current_username)):
     info = load_client_info()
     info = info.drop(info[info['ClientID'] == client_id].index)
     save_client_info(info)

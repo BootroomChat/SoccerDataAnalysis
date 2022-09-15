@@ -57,7 +57,7 @@ def send_report_bucket(bucket: oss2.Bucket, path_list: list, email=None):
                         else:
                             for each_season in info['Season'].split(','):
                                 if each_season in each_path:
-                                    send_dict[info['Email']].append(each_path)    
+                                    send_dict[info['Email']].append(each_path)
                     else:
                         lv = info['Level']
                         raise NotImplementedError(f'Level{lv} is not supported yet!')
