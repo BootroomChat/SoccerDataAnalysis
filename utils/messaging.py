@@ -12,11 +12,12 @@ from email.mime.application import MIMEApplication
 class AttachmentEmailSender(object):
 
     def __init__(self):
+        config = default_config()
         self.smtp_host = "smtp.office365.com"
-        self.smtp_user = "bootroomchat_editor@outlook.com"
-        self.smtp_pwd = "lirplwixqmmelukz"
-        self.smtp_port = 587
-        self.sender = "bootroomchat_editor@outlook.com"
+        self.smtp_user = config.get("mail", "user_name")
+        self.smtp_pwd = config.get("mail", "password")
+        self.smtp_port = config.get("mail", "port")
+        self.sender = config.get("mail", "user_name")
         self._smtpSSLClient = smtplib.SMTP(self.smtp_host, self.smtp_port)
         self._smtpSSLClient.ehlo()  # Hostname to send for this command defaults to the fully qualified domain name of the local host.
         self._smtpSSLClient.starttls()  # Puts connection to SMTP server in TLS mode
