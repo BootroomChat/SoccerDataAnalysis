@@ -8,6 +8,8 @@ from email.header import Header
 
 from email.mime.application import MIMEApplication
 
+from config.config import default_config
+
 
 class AttachmentEmailSender(object):
 
