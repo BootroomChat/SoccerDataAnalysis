@@ -111,7 +111,7 @@ if __name__ == '__main__':
                 else:
                     time.sleep(300)
     elif args.method == 'single':
-        if args.report_path is not None and args.email is not None:
+        if args.report_path is not None:
             path = args.report_path.split(',')
             path =[each_path.replace("+",' ') for each_path in path]
             send_report_bucket(bucket=bucket, path_list=path, email=args.email)
