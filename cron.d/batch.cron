@@ -1,1 +1,1 @@
-0 9,17 * * * cd /bootroomchat/XTScore/XTScore; python3.8 -m sync_oss save && python3.8 -m opta_match_map && python3.8 -m xt_run calculate_and_generate_report
+0 9,17 * * * cd /bootroomchat/XTScore/XTScore; python3.8 -m sync_oss save && python3.8 -m opta_match_map && python3.8 -m xt_run calculate_and_generate_report >  /tmp/load.log 2>&1 &
